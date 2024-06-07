@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ServerLibrary.Data;
+using ServerLibrary.Helpers;
+using ServerLibrary.Repositories.Contracts;
+using ServerLibrary.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,12 @@ builder.Services.AddDbContext<AppDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Sorry , your connection is not found"));
 } );
+
+// Adding JWT Service
+builder.Services.Configure<JwtSection>(builder.Configuration.GetSection("JwtSection"));
+
+// Accessing the Useraccount globally
+builder.Services.AddScoped<IUserAccount, UserAccountRepository>();
 
 var app = builder.Build();
 
